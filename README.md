@@ -38,6 +38,7 @@ _We don't say our website guarantees the Success , but it definitely increases t
 ![a3](https://user-images.githubusercontent.com/100276349/222914708-dd8531f3-fa6c-4cca-a623-a122765311e9.jpg)
 
 
+
 # Tech Stack :
 - [ ] <img src="https://img.shields.io/badge/MongoDB-white?style=for-the-badge&logo=mongodb&logoColor=4EA94B"> <!--MongoDB-->
 - [ ] <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white"> <!--Expressjs--> 
@@ -47,3 +48,44 @@ _We don't say our website guarantees the Success , but it definitely increases t
 - [ ] <img src="https://img.shields.io/badge/npm-CB3837?style=for-the-badge&logo=npm&logoColor=white"><!--Npm-->
 - [ ] <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white"> <!--CSS3-->
 - [ ] <img src="https://github.com/MarioTerron/logo-images/blob/master/logos/mongoose.png" height="20"> <!--Mongoose-->
+
+# Contribution Guidelines📚:
+- Try to keep pull requests small to minimize merge conflicts
+
+
+## Getting Started 🤩🤗:
+
+- Fork this repo (button on top)
+- Clone on your local machine
+
+```terminal
+git clone https://github.com/subratkumar46/Abhyudaya.git
+```
+- Navigate to project directory.
+```terminal
+cd Abhyudaya
+```
+
+- Create a new Branch
+
+```markdown
+git checkout -b my-new-branch
+```
+
+```markdown
+git add .
+```
+- Commit your changes.
+
+```markdown
+git commit -m "Relevant message"
+```
+- Then push 
+```markdown
+git push origin my-new-branch
+```
+
+
+- Create a new pull request from your forked repository
+
+<br>
