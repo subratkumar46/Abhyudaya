@@ -119,29 +119,32 @@ app.post("/register", async function (req, res) {
   // check if email username and password is valid
 
   if(req.body.password.length < 8){
-    return res.render("login");
+    return res.render("login", {message: "Password must be atleast 8 characters long"});
   }
 
   if(isEmail(req.body.email)) {
-    return res.render("login");
+    return res.render("login", {message: "Invalid Email"});
   }
 
   const student = await Student.findOne({ email: req.body.username });
   if(student){
-    return res.render("login");
+    return res.render("login", {message: "Email already registered"});
   }
+
+  const generateSecret = Math.floor(Math.random() * 1000000) + 1;
 
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
     const newStudent = new Student({
       email: req.body.username,
       username: req.body.personName,
       password: hash,
+      secret: generateSecret,
     });
     newStudent.save(function (err) {
       if (err) {
         console.log(err);
       } else {
-        res.render("login");
+        res.render("login", {message: "Registered Successfully! Your secret code is " + generateSecret + ""});
       }
     });
   });

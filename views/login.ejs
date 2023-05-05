@@ -280,6 +280,10 @@
             pointer-events: all;
         }
 
+        .red {
+            color: #ff0000;
+        }
+
         @media (max-width: 870px) {
             .container {
                 min-height: 800px;
@@ -426,6 +430,9 @@
             <div class="signin-signup">
                 <form action="/login" method="POST" class="sign-in-form" autocomplete="off">
                     <h2 class="title">Sign in</h2>
+                    <% if (typeof message !== 'undefined' && message && message.length > 0) { %>
+                        <h6 class="red"><%= message %></h6>
+                    <% } %>
                     <div class="input-field">
                         <i class="fas fa-user"></i>
                         <input type="email" name="username" placeholder="Email" />
