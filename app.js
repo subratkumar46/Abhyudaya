@@ -3,6 +3,7 @@ require("dotenv").config();
 const bodyParser = require("body-parser");
 const express = require("express");
 const bcrypt = require("bcrypt");
+const path = require('path');
 const app = express();
 const ejs = require("ejs");
 const mongoose = require("mongoose");
@@ -13,6 +14,7 @@ const { config } = require("process");
 const http = require("http").createServer(app);
 const saltRounds = 10;
 const io = require("socket.io")(http);
+const cors = require("cors");
 
 const PORT = process.env.PORT || 3000;
 
@@ -23,8 +25,11 @@ http.listen(PORT, () => {
 app.use("*/css", express.static("public/css"));
 app.use("*/images", express.static("public/images"));
 app.use("*/js", express.static("public/js"));
+app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
 
 app.use(
   session({
@@ -107,6 +112,10 @@ app.get("/logout", function (req, res) {
   });
 });
 
+app.get("/forgotpassword", function (req, res) {
+  res.render("forgotpassword", { message: "hii" });
+});
+
 app.get("/community", function (req, res) {
   if (req.isAuthenticated()) {
     res.render("community");
@@ -118,10 +127,6 @@ app.get("/community", function (req, res) {
 app.post("/register", async function (req, res) {
   // check if email username and password is valid
 
-  if(req.body.password.length < 8){
-    return res.render("login", {message: "Password must be atleast 8 characters long"});
-  }
-
   if(isEmail(req.body.email)) {
     return res.render("login", {message: "Invalid Email"});
   }
@@ -129,6 +134,10 @@ app.post("/register", async function (req, res) {
   const student = await Student.findOne({ email: req.body.username });
   if(student){
     return res.render("login", {message: "Email already registered"});
+  }
+
+  if(req.body.password.length < 8){
+    return res.render("login", {message: "Password must be atleast 8 characters long"});
   }
 
   const generateSecret = Math.floor(Math.random() * 1000000) + 1;
@@ -149,6 +158,33 @@ app.post("/register", async function (req, res) {
     });
   });
 });
+
+app.post('/forgotpassword', async function(req, res) {
+  const {email, secret, password} = req.body;
+  console.log(email, secret, password);
+  // return res.render("login", {message: "Email not registered!"});
+  const student = await Student.findOne({email: email});
+  if(!student){
+    return res.render("forgotpassword", {message: "Email not registered!"});
+  }
+
+  if(student.secret === secret){
+    bcrypt.hash(password, saltRounds, function (err, hash) {
+      student.password = hash;
+      student.save(function (err) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.render("login", {message: "Password changed successfully!"});
+        }
+      });
+    });
+  } else {
+    res.render("forgotpassword", {message: "Secret code is incorrect!"});
+  }
+});
+
+
 app.post("/login", async function (req, res) {
   var username = req.body.username;
   var password = req.body.password;
@@ -185,6 +221,7 @@ app.post("/adminLogin", function (req, res) {
     }
   });
 });
+
 
 io.on("connection", (socket) => {
   console.log("Connected...");
