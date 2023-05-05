@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const bodyParser = require("body-parser");
 const express = require("express");
 const bcrypt = require("bcrypt");
@@ -7,6 +9,7 @@ const mongoose = require("mongoose");
 const session = require("express-session");
 const passport = require("passport");
 const passportLocalMongoose = require("passport-local-mongoose");
+const { config } = require("process");
 const http = require("http").createServer(app);
 const saltRounds = 10;
 const io = require("socket.io")(http);
@@ -35,18 +38,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 mongoose.connect(
-  "mongodb+srv://saketaryann:kingowhat2002@cluster0.cjulfiv.mongodb.net/abhyudayaDB"
+  process.env.MONGO_URL,
 );
 
 const studentSchema = new mongoose.Schema({
   username: String,
-  email: String,
+  email: { type: String, unique: true },
   password: String,
   secret: String,
 });
 const adminSchema = new mongoose.Schema({
   username: String,
-  email: String,
+  email: { type: String, unique: true },
   password: String,
   secret: String,
 });
@@ -103,6 +106,7 @@ app.get("/logout", function (req, res) {
     }
   });
 });
+
 app.get("/community", function (req, res) {
   if (req.isAuthenticated()) {
     res.render("community");
@@ -111,7 +115,22 @@ app.get("/community", function (req, res) {
   }
 });
 
-app.post("/register", function (req, res) {
+app.post("/register", async function (req, res) {
+  // check if email username and password is valid
+
+  if(req.body.password.length < 8){
+    return res.render("login");
+  }
+
+  if(isEmail(req.body.email)) {
+    return res.render("login");
+  }
+
+  const student = await Student.findOne({ email: req.body.username });
+  if(student){
+    return res.render("login");
+  }
+
   bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
     const newStudent = new Student({
       email: req.body.username,
@@ -178,3 +197,8 @@ const handleBotMessages = (message) => {
   };
   io.emit("message", msg1);
 };
+
+const isEmail = (email) => {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
