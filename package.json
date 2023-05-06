@@ -2,6 +2,7 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "ejs": "^3.1.8",
     "express": "^4.18.1",
@@ -10,6 +11,10 @@
     "mongoose": "^6.10.4",
     "passport": "^0.6.0",
     "passport-local-mongoose": "^7.1.2",
+    "path": "^0.12.7",
     "socket.io": "^4.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
